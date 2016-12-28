@@ -3,9 +3,9 @@
   tasks:
     - name: Check that the somefile.conf exists
       stat:
-        path: ~/.ssh/authorized_keys
+        path: /etc/docker
       register: stat_result
 
     - name: install docker
-      script: install_docker.sh "PARAM001" "PARAM002"
+      script: install_docker.sh
       when: stat_result.stat.exists == False 
