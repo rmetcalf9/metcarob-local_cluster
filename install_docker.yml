@@ -1,7 +1,7 @@
 ---
 - hosts: clusternodes
   remote_user: pi
-  sudo: True
+  become: true
 
   tasks:
     - name: Check that the somefile.conf exists
