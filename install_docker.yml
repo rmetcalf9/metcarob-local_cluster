@@ -26,6 +26,15 @@
       notify: 
       - restart docker
 
+    - template:
+        src: overlay.conf
+        dest: /etc/systemd/system/docker.service.d/overlay.conf
+        owner: root
+        group: root
+        mode: "u=rw,g=r,o=r"
+      notify:
+      - restart docker
+
 #    - debug:
 #        msg: "FORCING restart of docker for testing"
 #      changed_when: true
@@ -34,4 +43,8 @@
 
   handlers:
     - name: restart docker
-      service: name=docker state=restarted
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: docker
+

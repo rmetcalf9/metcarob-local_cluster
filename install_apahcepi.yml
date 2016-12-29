@@ -1,0 +1,14 @@
+---
+- hosts: webservers
+
+  tasks:
+  - easy_install:
+      name: pip
+      state: latest
+
+  - easy_install:
+      name: docker-py
+
+  - name: pull an image
+    docker_image:
+      name: controller.metcarob-local.com:5000/apachepi:v1
