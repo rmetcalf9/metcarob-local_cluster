@@ -1,14 +1,43 @@
 ---
 - hosts: webservers
+  become: true
+  vars:
+    service:
+      longname: Apache Webserver
+      shortname: apachepi_container
 
   tasks:
-  - easy_install:
+  - name: install pip
+    easy_install:
       name: pip
       state: latest
 
-  - easy_install:
+  - name: install docker-py
+    easy_install:
       name: docker-py
 
-  - name: pull an image
+  - name: pull apachepi image
     docker_image:
       name: controller.metcarob-local.com:5000/apachepi:v1
+
+  - name: Create apache docker container
+    docker_container:
+      name: "{{ service.shortname }}"
+      image: controller.metcarob-local.com:5000/apachepi:v1
+      ports:
+      - "80:80"
+
+  - name: Install apachepi.service file
+    template:
+      src: docker_any.service
+      dest: /etc/systemd/system/docker_{{ service.shortname }}.service
+      owner: root
+      group: root
+      mode: "u=rwx,g=rwx,o=rwx"
+
+  - name: Enable apache service
+    systemd:
+      name: docker_{{ service.shortname }}
+      enabled: true
+      state: started
+      masked: no
