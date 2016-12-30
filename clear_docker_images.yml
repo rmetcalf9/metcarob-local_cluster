@@ -1,0 +1,31 @@
+---
+- hosts: clusternodes
+  become: true
+  vars:
+    service:
+      longname: Apache Webserver
+      shortname: apachepi_container
+
+  tasks:
+  - name: "disable unused services"
+    service: name={{item}} state=stopped enabled=no
+    register: unused_disable
+    failed_when: "unused_disable|failed and ('find' not in unused_disable.msg and 'found' not in unused_disable.msg)"
+    with_items:
+      - docker_{{ service.shortname }}
+
+  - name: Delete service file
+    file: 
+      path: /etc/systemd/system/docker_{{ service.shortname }}.service
+      state: absent
+
+  - name: Remove apache docker container
+    docker_container:
+      name: "{{ service.shortname }}"
+      state: absent
+
+  - name: remove apachepi image
+    docker_image:
+      name: controller.metcarob-local.com:5000/apachepi:v1
+      state: absent
+
