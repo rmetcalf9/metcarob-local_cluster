@@ -26,6 +26,12 @@
       notify: 
       - restart docker
 
+    - name: Create docker service directory
+      file: 
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        mode: "u=rw,g=r,o=r"
+
     - template:
         src: overlay.conf
         dest: /etc/systemd/system/docker.service.d/overlay.conf
