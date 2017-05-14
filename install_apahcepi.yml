@@ -7,14 +7,37 @@
       shortname: apachepi_container
 
   tasks:
-  - name: install pip
-    easy_install:
-      name: pip
-      state: latest
+#  - name: python setup tools
+#    apt: 
+#      pkg: python-setuptools
+#      state: present
 
-  - name: install docker-py
-    easy_install:
-      name: docker-py
+#  - name: install pip
+#    easy_install:
+#      name: pip
+#      state: latest
+
+  - name: python3
+    apt:
+      pkg: python3
+      state: present
+
+  - name: python3-pip
+    apt:
+      pkg: python3-pip
+      state: present
+
+#  - name: install docker-py
+#    easy_install:
+#      name: docker-py
+
+  - name: update pip3 using easyinstall
+    shell: easy_install3 -U pip
+
+  - name: pip3 docker
+    pip:
+      name: docker
+      executable: pip3
 
   - name: pull apachepi image
     docker_image:
